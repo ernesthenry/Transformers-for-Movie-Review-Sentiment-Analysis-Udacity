@@ -26,12 +26,12 @@ Conventional GPT architectures perform auto-regressive next-token prediction, re
 
 2. **Temporal Mean Pooling Layer**:
    Instead of extracting token-level predictions at each index, we implemented sequence-level pooling:
-   $$\mathbf{h}_{	ext{pooled}} = rac{1}{T} \sum_{t=1}^{T} \mathbf{h}_t \in \mathbb{R}^{d_{	ext{embed}}}$$
+   $$\mathbf{h}_{\text{pooled}} = \frac{1}{T} \sum_{t=1}^{T} \mathbf{h}_t \in \mathbb{R}^{d_{\text{embed}}}$$
    Mean pooling aggregates contextualized representations evenly across all active tokens, capturing broad semantic mood better than taking only the last token position.
 
 3. **Classification Head**:
-   A linear projection maps pooled embeddings $\mathbf{h}_{	ext{pooled}} \in \mathbb{R}^{128}$ directly to raw class logits:
-   $$\mathbf{z} = \mathbf{W}_{	ext{class}} \mathbf{h}_{	ext{pooled}} + \mathbf{b} \in \mathbb{R}^2$$
+   A linear projection maps pooled embeddings $\mathbf{h}_{\text{pooled}} \in \mathbb{R}^{128}$ directly to raw class logits:
+   $$\mathbf{z} = \mathbf{W}_{\text{class}} \mathbf{h}_{\text{pooled}} + \mathbf{b} \in \mathbb{R}^2$$
    Class 0 corresponds to Negative sentiment; Class 1 corresponds to Positive sentiment.
 
 ### 2.2 Model Hyperparameter Configuration
@@ -73,16 +73,23 @@ The dataset consists of 50,000 IMDB movie reviews split evenly between training 
 
 ## 4. Training Dynamics & Experimental Results
 
-The network was trained using the `AdamW` optimizer ($lpha = 3 	imes 10^{-4}$) and PyTorch `CrossEntropyLoss` with mini-batches of size 32.
+The network was trained using the `AdamW` optimizer ($\alpha = 3 \times 10^{-4}$) and PyTorch `CrossEntropyLoss` with mini-batches of size 32 for 10 epochs.
 
 ### Training Progression Over Epochs
 
 | Epoch | Step Range | Training Loss (Avg / 100 steps) | Validation Accuracy | Status |
 | :---: | :---: | :---: | :---: | :---: |
 | **Untrained** | - | - | **49.76%** | Random chance |
-| **1** | 1 - 704 | 0.6927 $	o$ 0.5496 | **70.00%** | Rapid feature learning |
-| **2** | 705 - 1408 | 0.5124 $	o$ 0.4763 | **74.08%** | Attention alignment |
-| **3** | 1409 - 2112 | 0.4610 $	o$ 0.4237 | **77.12%** | Benchmark exceeded (>75%) |
+| **1** | 1 - 704 | 0.6927 → 0.5496 | **72.08%** | Rapid feature learning |
+| **2** | 705 - 1408 | 0.5151 → 0.4843 | **76.52%** | Crosses 75% on validation |
+| **3** | 1409 - 2112 | 0.4450 → 0.4129 | **77.72%** |  |
+| **4** | 2113 - 2816 | 0.3795 → 0.3457 | **79.36%** |  |
+| **5** | 2817 - 3520 | 0.3178 → 0.3137 | **79.88%** | Peak validation accuracy |
+| **6** | 3521 - 4224 | 0.2866 → 0.2848 | **79.72%** |  |
+| **7** | 4225 - 4928 | 0.2315 → 0.2374 | **78.68%** | Overfitting begins (train loss keeps falling) |
+| **8** | 4929 - 5632 | 0.1738 → 0.1957 | **78.80%** |  |
+| **9** | 5633 - 6336 | 0.1270 → 0.1883 | **78.12%** |  |
+| **10** | 6337 - 7040 | 0.1342 → 0.1236 | **78.72%** | Final model used for testing |
 | **Final Test** | - | - | **76.05%** | **PASSED** |
 
 ### Test Performance Assessment
@@ -121,8 +128,8 @@ print(analyzer.format_predictions(results))
     P(Neg): 0.0023 | P(Pos): 0.9977
 
 [2] Review: "Terrible waste of time. The plot was boring and made no sense at all."
-    Sentiment: 👎 Negative (Confidence: 98.64%)
-    P(Neg): 0.9864 | P(Pos): 0.0136
+    Sentiment: 👎 Negative (Confidence: 99.98%)
+    P(Neg): 0.9998 | P(Pos): 0.0002
 ```
 
 ---

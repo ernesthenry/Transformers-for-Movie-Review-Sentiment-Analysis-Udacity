@@ -40,8 +40,8 @@ At **CineScope**, understanding viewer reception is fundamental to recommending 
 Unlike autoregressive language models that predict the next token one-by-one:
 1. **Subword Tokenizer**: Uses `bert-base-uncased` WordPiece vocabulary (30,522 tokens) for efficient handling of compound words and movie terminology.
 2. **Transformer Blocks**: 4 stacked blocks featuring multi-head self-attention, layer normalization, residual skip connections, and GELU feed-forward networks.
-3. **Temporal Mean Pooling**: Condenses token vectors across the sequence length into a single fixed-length embedding $\mathbf{h}_{	ext{pooled}} = rac{1}{T}\sum_{t=1}^T \mathbf{h}_t \in \mathbb{R}^{128}$.
-4. **Classification Head**: Linear layer mapping from $\mathbb{R}^{128} 	o \mathbb{R}^2$ producing logits for Negative (0) and Positive (1) classes.
+3. **Temporal Mean Pooling**: Condenses token vectors across the sequence length into a single fixed-length embedding $\mathbf{h}_{\text{pooled}} = \frac{1}{T}\sum_{t=1}^T \mathbf{h}_t \in \mathbb{R}^{128}$.
+4. **Classification Head**: Linear layer mapping from $\mathbb{R}^{128} \to \mathbb{R}^2$ producing logits for Negative (0) and Positive (1) classes.
 
 ```
 Input Tokens (B, 128) 
@@ -72,7 +72,7 @@ Input Tokens (B, 128)
 | `context_size` | 128 | Standardized token sequence length |
 | `layers_num` | 4 | Number of stacked Transformer blocks |
 | `heads_num` | 4 | Multi-head attention heads per block |
-| `head_size` | 32 | Dimension per attention head ($4 	imes 32 = 128$) |
+| `head_size` | 32 | Dimension per attention head ($4 \times 32 = 128$) |
 | `dropout_rate` | 0.1 | Regularization dropout probability |
 | `num_classes` | 2 | Binary classification (0: Negative, 1: Positive) |
 | **Total Parameters** | **4,814,850** | ~4.81M trainable parameters |
@@ -86,9 +86,16 @@ Input Tokens (B, 128)
 | Epoch | Step Range | Training Loss (Avg / 100 steps) | Validation Accuracy | Notes |
 | :---: | :---: | :---: | :---: | :--- |
 | **Untrained** | - | - | **49.76%** | Baseline random guess |
-| **Epoch 1** | 1 - 704 | 0.6927 $	o$ 0.5496 | **70.00%** | Rapid convergence |
-| **Epoch 2** | 705 - 1408 | 0.5124 $	o$ 0.4763 | **74.08%** | Feature stabilization |
-| **Epoch 3** | 1409 - 2112 | 0.4610 $	o$ 0.4237 | **77.12%** | Validation milestone |
+| **Epoch 1** | 1 - 704 | 0.6927 → 0.5496 | **72.08%** | Rapid feature learning |
+| **Epoch 2** | 705 - 1408 | 0.5151 → 0.4843 | **76.52%** | Crosses 75% on validation |
+| **Epoch 3** | 1409 - 2112 | 0.4450 → 0.4129 | **77.72%** |  |
+| **Epoch 4** | 2113 - 2816 | 0.3795 → 0.3457 | **79.36%** |  |
+| **Epoch 5** | 2817 - 3520 | 0.3178 → 0.3137 | **79.88%** | Peak validation accuracy |
+| **Epoch 6** | 3521 - 4224 | 0.2866 → 0.2848 | **79.72%** |  |
+| **Epoch 7** | 4225 - 4928 | 0.2315 → 0.2374 | **78.68%** | Overfitting begins (train loss keeps falling) |
+| **Epoch 8** | 4929 - 5632 | 0.1738 → 0.1957 | **78.80%** |  |
+| **Epoch 9** | 5633 - 6336 | 0.1270 → 0.1883 | **78.12%** |  |
+| **Epoch 10** | 6337 - 7040 | 0.1342 → 0.1236 | **78.72%** | Final model used for testing |
 | **Final Test**| **25,000 samples** | - | **76.05%** | **Rubric requirement passed (> 75%)** |
 
 ---
@@ -123,8 +130,8 @@ print(analyzer.format_predictions(predictions))
     P(Neg): 0.0023 | P(Pos): 0.9977
 
 [2] Review: "Terrible waste of time. The plot was boring and made no sense at all."
-    Sentiment: 👎 Negative (Confidence: 98.64%)
-    P(Neg): 0.9864 | P(Pos): 0.0136
+    Sentiment: 👎 Negative (Confidence: 99.98%)
+    P(Neg): 0.9998 | P(Pos): 0.0002
 ```
 
 ---

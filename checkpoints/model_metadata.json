@@ -26,13 +26,21 @@
         "optimizer": "AdamW",
         "learning_rate": 0.0003,
         "loss_function": "CrossEntropyLoss",
-        "epochs": 3
+        "epochs": 10
     },
     "performance_metrics": {
         "initial_val_accuracy": "49.76%",
-        "epoch_1_val_accuracy": "70.00%",
-        "epoch_2_val_accuracy": "74.08%",
-        "epoch_3_val_accuracy": "77.12%",
+        "epoch_1_val_accuracy": "72.08%",
+        "epoch_2_val_accuracy": "76.52%",
+        "epoch_3_val_accuracy": "77.72%",
+        "epoch_4_val_accuracy": "79.36%",
+        "epoch_5_val_accuracy": "79.88%",
+        "epoch_6_val_accuracy": "79.72%",
+        "epoch_7_val_accuracy": "78.68%",
+        "epoch_8_val_accuracy": "78.80%",
+        "epoch_9_val_accuracy": "78.12%",
+        "epoch_10_val_accuracy": "78.72%",
+        "best_val_accuracy": "79.88% (epoch 5)",
         "final_test_accuracy": "76.05%",
         "rubric_threshold": "> 75.0%",
         "benchmark_status": "PASSED"

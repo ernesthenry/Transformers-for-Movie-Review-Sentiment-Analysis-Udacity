@@ -21,7 +21,7 @@ class SentimentAnalyzer:
             self.device = torch.device(device)
 
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
-        
+
         self.default_config = {
             "vocabulary_size": self.tokenizer.vocab_size,
             "num_classes": 2,
@@ -44,18 +44,27 @@ class SentimentAnalyzer:
         """
         Load model weights from checkpoint file.
         """
-        checkpoint = torch.load(checkpoint_path, map_location=self.device)
+        checkpoint = torch.load(checkpoint_path, map_location=self.device, weights_only=False)
         config = checkpoint.get("config", self.default_config) if isinstance(checkpoint, dict) else self.default_config
         self.model = DemoGPT(config).to(self.device)
 
         if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
-            self.model.load_state_dict(checkpoint["model_state_dict"])
+            state_dict = checkpoint["model_state_dict"]
         elif isinstance(checkpoint, dict):
             # direct state_dict
-            self.model.load_state_dict(checkpoint)
+            state_dict = checkpoint
         else:
-            self.model.load_state_dict(checkpoint.state_dict())
+            state_dict = checkpoint.state_dict()
 
+        # Older checkpoints named the head `classification_head` and had no bias;
+        # map it onto `classifier` with a zero bias (numerically identical).
+        state_dict = dict(state_dict)
+        if "classification_head.weight" in state_dict:
+            state_dict["classifier.weight"] = state_dict.pop("classification_head.weight")
+            if "classifier.bias" not in state_dict and self.model.classifier.bias is not None:
+                state_dict["classifier.bias"] = torch.zeros_like(self.model.classifier.bias)
+
+        self.model.load_state_dict(state_dict)
         self.model.eval()
         self.config = config
 
@@ -120,9 +129,7 @@ class SentimentAnalyzer:
             icon = "👍 Positive" if item["label"] == 1 else "👎 Negative"
             conf = item["confidence"] * 100
             preview = (item["text"][:80] + "...") if len(item["text"]) > 80 else item["text"]
-            output_lines.append(f"[{idx}] Review: "{preview}"")
+            output_lines.append(f'[{idx}] Review: "{preview}"')
             output_lines.append(f"    Sentiment: {icon} (Confidence: {conf:.2f}%)")
-            output_lines.append(f"    P(Neg): {item['probabilities']['negative']:.4f} | P(Pos): {item['probabilities']['positive']:.4f}
-")
-        return "
-".join(output_lines)
+            output_lines.append(f"    P(Neg): {item['probabilities']['negative']:.4f} | P(Pos): {item['probabilities']['positive']:.4f}\n")
+        return "\n".join(output_lines)

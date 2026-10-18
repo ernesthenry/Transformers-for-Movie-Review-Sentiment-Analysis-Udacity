@@ -18,7 +18,7 @@
 
 ---
 
-## 📋 Overview
+## Overview
 
 At **CineScope**, understanding viewer reception is fundamental to recommending movies and television series that align with user preferences. Traditional collaborative filtering struggles with newly released media and unrated catalog titles. 
 
@@ -34,7 +34,7 @@ At **CineScope**, understanding viewer reception is fundamental to recommending 
 
 ---
 
-## 🏗 Architecture
+## Architecture
 
 ### From Generative Decoder to Discriminative Classifier
 Unlike autoregressive language models that predict the next token one-by-one:
@@ -79,7 +79,7 @@ Input Tokens (B, 128)
 
 ---
 
-## 📊 Results
+## Results
 
 ### Validation Accuracy & Loss Progression
 
@@ -93,7 +93,7 @@ Input Tokens (B, 128)
 
 ---
 
-## 🌟 Standout Features
+## Standout Features
 
 ### 1. Serialized Model Checkpoint (`sentiment_model_checkpoint.pt`)
 The trained weights, config dictionary, and benchmark metrics are saved and loadable:
@@ -133,7 +133,7 @@ print(analyzer.format_predictions(predictions))
 
 ### 1. Clone & Install Dependencies
 ```bash
-git clone https://github.com/ernesthenry/SentimentScope.git
+git clone https://github.com/ernesthenry/Transformers-for-Movie-Review-Sentiment-Analysis.git
 cd SentimentScope
 pip install -r requirements.txt
 ```
@@ -153,7 +153,7 @@ print(analyzer.predict("Inception is an extraordinary, mind-bending cinematic ad
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 SentimentScope/
@@ -175,7 +175,7 @@ SentimentScope/
 
 ---
 
-## 📝 Rubric Verification
+## Rubric Verification
 
 | Rubric Criteria | Requirement | Status |
 | :--- | :--- | :---: |
@@ -191,5 +191,5 @@ SentimentScope/
 
 ---
 
-## 📄 License
+## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

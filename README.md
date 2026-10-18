@@ -1,4 +1,4 @@
-# 🎬 SentimentScope: Transformer-based Sentiment Analysis for CineScope
+# SentimentScope: Transformer-based Sentiment Analysis for CineScope
 
 <div align="center">
 

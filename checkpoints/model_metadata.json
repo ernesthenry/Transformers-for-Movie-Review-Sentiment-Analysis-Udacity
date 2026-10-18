@@ -1,0 +1,44 @@
+{
+    "model_name": "DemoGPT-SentimentClassifier",
+    "project": "SentimentScope",
+    "organization": "CineScope Recommendation Systems",
+    "author": "Kato Henry",
+    "architecture": {
+        "type": "TransformerEncoderWithMeanPooling",
+        "vocabulary_size": 30522,
+        "d_embed": 128,
+        "context_size": 128,
+        "layers_num": 4,
+        "heads_num": 4,
+        "head_size": 32,
+        "dropout_rate": 0.1,
+        "use_bias": true,
+        "num_classes": 2,
+        "pooling_method": "mean_pooling_over_time_dim",
+        "total_parameters": 4814850
+    },
+    "training_hyperparameters": {
+        "dataset": "IMDB Large Movie Review (25k train, 25k test)",
+        "train_samples": 22500,
+        "val_samples": 2500,
+        "test_samples": 25000,
+        "batch_size": 32,
+        "optimizer": "AdamW",
+        "learning_rate": 0.0003,
+        "loss_function": "CrossEntropyLoss",
+        "epochs": 3
+    },
+    "performance_metrics": {
+        "initial_val_accuracy": "49.76%",
+        "epoch_1_val_accuracy": "70.00%",
+        "epoch_2_val_accuracy": "74.08%",
+        "epoch_3_val_accuracy": "77.12%",
+        "final_test_accuracy": "76.05%",
+        "rubric_threshold": "> 75.0%",
+        "benchmark_status": "PASSED"
+    },
+    "checkpoint_files": [
+        "checkpoints/sentiment_model_checkpoint.pt",
+        "sentiment_model_checkpoint.pt"
+    ]
+}
